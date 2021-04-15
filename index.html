@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spriiiiiidarr</title>
+</head>
+
+<body>
+    <h1>Spridarräknarrrrsimulatorrrr</h1>
+    <input type="number" id="sprdLngdInput" value=63 onkeyup="trackChange(this.value)" />
+    <input type="range" id="sprdLngdRange" min=50 max=90 value=63 oninput=trackChange(this.value) />
+    <canvas id="myCanvas" width="300" height="850" style="border: 1px solid black">
+    </canvas>
+
+    <script>
+        let canvas  = document.querySelector("#myCanvas");
+        let context = canvas.getContext("2d");
+
+        let baseY = 20;
+        let baseX = canvas.width / 2;
+        let width = 4;
+
+        let mastLangd = 780; // min = 767, max = 792.5
+        let vantHojd = 605;  // min = max = 605
+        let spridarHojd = 294; // min = 282, max = 305
+
+        let spridarLangd = 61.5;
+        let hypotenusa = 310;
+        let mastkatet = Math.sqrt(hypotenusa ** 2 - spridarLangd ** 2);
+
+        var nySpridarLangd = 63;
+        var hypotenuseLeft = Math.sqrt(mastkatet ** 2 + nySpridarLangd ** 2)
+
+        function trackChange(value) {
+            if (value < 10) {
+                return;
+            }
+            nySpridarLangd = value;
+            hypotenuseLeft = Math.sqrt(mastkatet ** 2 + nySpridarLangd ** 2)
+            document.getElementById("sprdLngdInput").value = value;
+            document.getElementById("sprdLngdRange").value = value;
+            redraw();
+        }
+
+        function drawMast() {
+            context.beginPath();
+            context.moveTo(baseX, baseY);
+            context.lineTo(baseX, baseY + mastLangd);
+
+            context.lineWidth = 5;
+            context.strokeStyle = "#AC503D";
+            context.stroke();
+        }
+
+        function drawPoints() {
+            context.fillRect(baseX-4, baseY + mastLangd - vantHojd, 8, 3); // Vantarnas topp
+            context.fillRect(baseX-4, baseY + mastLangd - spridarHojd, 8, 3); // Spridare
+        }
+
+        function drawSpridareRight() {
+            context.beginPath();
+            context.moveTo(baseX + width,                baseY + mastLangd - vantHojd);
+            context.lineTo(baseX + width,                baseY + mastLangd - vantHojd + mastkatet);
+            context.lineTo(baseX + width + spridarLangd, baseY + mastLangd - vantHojd + mastkatet);
+            context.closePath();
+            context.lineWidth = 4;
+            context.strokeStyle = '#85929E';
+            context.stroke();
+            context.fillStyle = "#B1D57A";
+            context.fill();
+
+            context.font = "16px serif";
+            context.fillText("Gamla spridaren:", 160, 100);
+            context.fillText(spridarLangd + " cm", 160, 120);
+            context.fillText("Mastkatet: " + Number.parseFloat(mastkatet).toFixed(2) + " cm", 160, 140);
+            context.fillText("Hyptnsa: " + Number.parseFloat(hypotenusa).toFixed(2) + " cm", 160, 160);
+        }
+
+        function drawSpridareLeft() {
+            context.beginPath();
+            context.moveTo(baseX - width,                  baseY + mastLangd - vantHojd);
+            context.lineTo(baseX - width,                  baseY + mastLangd - vantHojd + mastkatet);
+            context.lineTo(baseX - width - nySpridarLangd, baseY + mastLangd - vantHojd + mastkatet);
+            context.closePath();
+            context.lineWidth = 5;
+            context.strokeStyle = '#85929E';
+            context.stroke();
+            context.fillStyle = "#F39C12";
+            context.fill();
+
+            context.font = "16px serif";
+            context.fillText("Nya spridaren:", 5, 100);
+            context.fillText(nySpridarLangd + " cm", 5, 120);
+            context.fillText("Mastkatet: " + Number.parseFloat(mastkatet).toFixed(2) + " cm", 5, 140);
+            context.fillText("Hyptnsa: " + Number.parseFloat(hypotenuseLeft).toFixed(2) + " cm", 5, 160);
+        }
+
+        function redraw() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            drawMast();
+            drawSpridareRight();
+            drawSpridareLeft();
+            drawPoints();
+        }
+
+        console.log("MAST: ", mastkatet);
+        redraw();
+    </script>
+</body>
+</html>
