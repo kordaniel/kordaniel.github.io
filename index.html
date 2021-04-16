@@ -1,15 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+    .centered {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    h1,h3 {
+        color: #000000;
+        text-align: center;
+    }
+    body {
+
+        background-color: #DBD5B5;
+    }
+    div {
+        margin-left: auto;
+        margin-right: auto;
+        width: 18em;
+
+    }
+
+    canvas {
+        background-color: #C2E3EB;
+        border: 3px solid black;
+    }
+    </style>
     <title>Spriiiiiidarr</title>
 </head>
 
 <body>
-    <h1>Spridarräknarrrrsimulatorrrr</h1>
-    <input type="number" id="sprdLngdInput" value=63 onkeyup="trackChange(this.value)" />
-    <input type="range" id="sprdLngdRange" min=50 max=90 value=63 oninput=trackChange(this.value) />
-    <canvas id="myCanvas" width="300" height="850" style="border: 1px solid black">
-    </canvas>
+    <h1>Spridarräknarrrsimulatorrrr</h1>
+    <h3>Monark 606, John Mast</h3>
+    <div>Spridarlängd: <input type="number" id="sprdLngdInput" value=63 onkeyup="trackChange(this.value)" /> cm </div>
+    <input class="centered" type="range" id="sprdLngdRange" min=50 max=90 value=63 oninput=trackChange(this.value) />
+    <canvas class="centered" id="myCanvas" width="400px" height="850"></canvas>
+    <p class="centered">Vissa mått är uppmätta och andra är tagna från <a href="http://www.svensksegling.se/globalassets/svenska-seglarforbundet/for-batagare/regler/klassregler/606_klassregler_2016.pdf">Svenska 606-förbundets klassregler (pdf)</a>. Ifall måtten från klassreglerna har toleranser, så har här använts det mittersta talet mellan min & max. Dom uppmätta måtten är mätta med en tolerans på ca. en halv meter.</p>
 
     <script>
         let canvas  = document.querySelector("#myCanvas");
@@ -23,7 +52,7 @@
         let vantHojd = 605;  // min = max = 605
         let spridarHojd = 294; // min = 282, max = 305
 
-        let spridarLangd = 61.5;
+        let spridarLangd = 61;
         let hypotenusa = 310;
         let mastkatet = Math.sqrt(hypotenusa ** 2 - spridarLangd ** 2);
 
@@ -45,53 +74,62 @@
             context.beginPath();
             context.moveTo(baseX, baseY);
             context.lineTo(baseX, baseY + mastLangd);
+            context.closePath();
 
-            context.lineWidth = 5;
+            context.lineWidth = width;
             context.strokeStyle = "#AC503D";
             context.stroke();
         }
 
         function drawPoints() {
-            context.fillRect(baseX-4, baseY + mastLangd - vantHojd, 8, 3); // Vantarnas topp
-            context.fillRect(baseX-4, baseY + mastLangd - spridarHojd, 8, 3); // Spridare
+            context.fillRect(baseX - width, baseY + mastLangd - vantHojd, width * 2, (width / 2)); // Vantarnas topp
+            context.fillRect(baseX - width, baseY + mastLangd - spridarHojd, width * 2, (width / 2)); // Spridare
         }
 
         function drawSpridareRight() {
             context.beginPath();
-            context.moveTo(baseX + width,                baseY + mastLangd - vantHojd);
-            context.lineTo(baseX + width,                baseY + mastLangd - vantHojd + mastkatet);
-            context.lineTo(baseX + width + spridarLangd, baseY + mastLangd - vantHojd + mastkatet);
+            context.moveTo(baseX + (width / 2) + spridarLangd, baseY + mastLangd);
+            context.lineTo(baseX + (width / 2) + spridarLangd, baseY + mastLangd - vantHojd + mastkatet);
+            context.lineTo(baseX + (width / 2),                baseY + mastLangd - vantHojd);
+            context.lineTo(baseX + (width / 2),                baseY + mastLangd - vantHojd + mastkatet);
+            context.lineTo(baseX + (width / 2) + spridarLangd, baseY + mastLangd - vantHojd + mastkatet);
             context.closePath();
-            context.lineWidth = 4;
-            context.strokeStyle = '#85929E';
+            context.lineWidth = Math.floor(width / 2);
+            context.strokeStyle = "#000000";
             context.stroke();
-            context.fillStyle = "#B1D57A";
+            context.fillStyle = "#F8333C";
             context.fill();
 
             context.font = "16px serif";
-            context.fillText("Gamla spridaren:", 160, 100);
-            context.fillText(spridarLangd + " cm", 160, 120);
-            context.fillText("Mastkatet: " + Number.parseFloat(mastkatet).toFixed(2) + " cm", 160, 140);
-            context.fillText("Hyptnsa: " + Number.parseFloat(hypotenusa).toFixed(2) + " cm", 160, 160);
+            context.fillText("Gamla spridaren:", baseX + 5, 100);
+            context.fillText(spridarLangd + " cm", baseX + 5, 120);
+            context.fillText("Mastkatet: " + Number.parseFloat(mastkatet).toFixed(2) + " cm", baseX + 5, 140);
+            context.fillText("Hyptnsa: " + Number.parseFloat(hypotenusa).toFixed(2) + " cm", baseX + 5, 160);
         }
 
         function drawSpridareLeft() {
             context.beginPath();
-            context.moveTo(baseX - width,                  baseY + mastLangd - vantHojd);
-            context.lineTo(baseX - width,                  baseY + mastLangd - vantHojd + mastkatet);
-            context.lineTo(baseX - width - nySpridarLangd, baseY + mastLangd - vantHojd + mastkatet);
+            context.moveTo(baseX - (width / 2) - spridarLangd  , baseY + mastLangd);
+            context.lineTo(baseX - (width / 2) - nySpridarLangd, baseY + mastLangd - vantHojd + mastkatet);
+            context.lineTo(baseX - (width / 2),                  baseY + mastLangd - vantHojd);
+            context.lineTo(baseX - (width / 2),                  baseY + mastLangd - vantHojd + mastkatet);
+            context.lineTo(baseX - (width / 2) - nySpridarLangd, baseY + mastLangd - vantHojd + mastkatet);
             context.closePath();
-            context.lineWidth = 5;
-            context.strokeStyle = '#85929E';
+            context.lineWidth = Math.floor(width / 2);
+            context.strokeStyle = "#000000";
             context.stroke();
-            context.fillStyle = "#F39C12";
+            context.fillStyle = "#44AF69";
             context.fill();
 
             context.font = "16px serif";
+            context.fillStyle = "#F8333C";
             context.fillText("Nya spridaren:", 5, 100);
             context.fillText(nySpridarLangd + " cm", 5, 120);
             context.fillText("Mastkatet: " + Number.parseFloat(mastkatet).toFixed(2) + " cm", 5, 140);
             context.fillText("Hyptnsa: " + Number.parseFloat(hypotenuseLeft).toFixed(2) + " cm", 5, 160);
+            context.fillText("Skillnad i vantlängd", 5, 180);
+            context.fillText("(top<->spridare): ", 5, 200);
+            context.fillText(Number.parseFloat(hypotenuseLeft - hypotenusa).toFixed(4) + " cm", 10, 220);
         }
 
         function redraw() {
@@ -102,7 +140,7 @@
             drawPoints();
         }
 
-        console.log("MAST: ", mastkatet);
+        console.log("Loaded!");
         redraw();
     </script>
 </body>
